@@ -99,10 +99,22 @@ class Question(models.Model):
     grade_point = models.PositiveIntegerField()
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
 
-class Choice(models.model):
+class Choice(models.Model):
     content = models.TextField(max_length=200)
     is_correct = models.BooleanField()
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+class Submission(models.Model):
+    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
+    chocices = models.ManyToManyField(Choice)
+
+def is_get_score(self, selected_ids):
+    all_answers = self.choice_set.filter(is_correct=True).count()
+    selected_correct = self.choice_set.filter(is_correct=True, id__in=selected_ids).count()
+    if all_answers == selected_correct:
+        return True
+    else:
+        return False
 
 # <HINT> Create a Question Model with:
     # Used to persist question content for a course
